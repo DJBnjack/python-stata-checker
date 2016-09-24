@@ -43,7 +43,7 @@ for ado_file in code.keys():
         for ado_word in ado_words:
             try:
                 ado_word_s = ado_word.decode(encoding='UTF-8')
-                if ado_word_s.lower() in magic_words:
+                if ado_word_s.lower() in magic_words and ado_word_s.lower() != ado_file.lower()[:-4]:
                     #print("Found word: " + ado_word_s + " in file " + ado_file)
 
                     # Save dependencies
@@ -71,15 +71,15 @@ for ado_file in code.keys():
 # Print the dependencies and usages + save them to file 'output.txt'
 with open('output.txt', 'w') as file_out:
     for ado_file in dependencies.keys():
-        print("Dependencies for " + ado_file + ":")
+        #print("Dependencies for " + ado_file + ":")
         file_out.write("Dependencies for " + ado_file + ":" + "\n")
         for dep_word in dependencies[ado_file]:
-            print("\t" + str(dep_word))
+            #print("\t" + str(dep_word))
             file_out.write("\t" + str(dep_word)+"\n")
 
     for ado_word in usages.keys():
-        print("Usages of " + ado_word + ":")
+        #print("Usages of " + ado_word + ":")
         file_out.write("Usages of " + ado_word + ":" + "\n")
         for used_file in usages[ado_word]:
-            print("\t" + str(used_file))
+            #print("\t" + str(used_file))
             file_out.write("\t" + str(used_file)+"\n")
