@@ -26,6 +26,10 @@ with zipfile.ZipFile(sys.argv[1],"r") as zip_ref:
             code[i.filename] =  ado_file.readlines()
             linecount += len(code[i.filename])
 
+            # For all files, add dependencies and usages index
+            dependencies[i.filename] = []
+            usages[i.filename.lower()[:-4]] = []
+
             # For each file, print the number of lines
             #print(i.filename + ":" + len(code[i.filename]))
 
@@ -47,19 +51,13 @@ for ado_file in code.keys():
                     #print("Found word: " + ado_word_s + " in file " + ado_file)
 
                     # Save dependencies
-                    current_dependencies = []
-                    if ado_file in dependencies.keys():
-                        current_dependencies = dependencies[ado_file]
-
+                    current_dependencies = dependencies[ado_file]
                     if ado_word_s not in current_dependencies:
                         current_dependencies.append(ado_word_s)
                         dependencies[ado_file] = current_dependencies
 
                     # Save usages
-                    current_usages = []
-                    if ado_word_s in usages.keys():
-                        current_usages = usages[ado_word_s]
-                    
+                    current_usages = usages[ado_word_s]
                     if ado_file not in current_usages:
                         current_usages.append(ado_file)
                         usages[ado_word_s] = current_usages
