@@ -1,6 +1,7 @@
-import sys, zipfile
+import sys
+import zipfile
 if len(sys.argv) < 2:
-    print ("Usage: python app.py <path_to_zipfile>")
+    print("Usage: python app.py <path_to_zipfile>")
     exit()
 
 # We are going to store the code in a dict, using the filename as index
@@ -27,11 +28,11 @@ with zipfile.ZipFile(sys.argv[1],"r") as zip_ref:
             linecount += len(code[i.filename])
 
             # For all files, add dependencies and usages index
-            dependencies[i.filename] = []
+            dependencies[i.filename.lower()] = []
             usages[i.filename.lower()[:-4]] = []
 
             # For each file, print the number of lines
-            #print(i.filename + ":" + len(code[i.filename]))
+            # print(i.filename + ":" + str(len(code[i.filename])))
 
 # Print some statistics
 print("\nTotal files: " + str(len(code.keys())))
@@ -41,7 +42,7 @@ print("Total lines: " + str(linecount))
 #print(magic_words)
 
 # For each file, check the magic words
-for ado_file in code.keys():
+for ado_file in code:
     for ado_line in code[ado_file]:
         ado_words = ado_line.strip().split()
         for ado_word in ado_words:
@@ -52,14 +53,14 @@ for ado_file in code.keys():
 
                     # Save dependencies
                     current_dependencies = dependencies[ado_file]
-                    if ado_word_s not in current_dependencies:
-                        current_dependencies.append(ado_word_s)
+                    if ado_word_s.lower() not in current_dependencies:
+                        current_dependencies.append(ado_word_s.lower())
                         dependencies[ado_file] = current_dependencies
 
                     # Save usages
                     current_usages = usages[ado_word_s]
-                    if ado_file not in current_usages:
-                        current_usages.append(ado_file)
+                    if ado_file.lower() not in current_usages:
+                        current_usages.append(ado_file.lower())
                         usages[ado_word_s] = current_usages
             except:
                 # Always due to some silly accent chars in the source file
@@ -68,16 +69,16 @@ for ado_file in code.keys():
 
 # Print the dependencies and usages + save them to file 'output.txt'
 with open('output.txt', 'w') as file_out:
-    for ado_file in dependencies.keys():
+    for ado_file in sorted(dependencies):
         #print("Dependencies for " + ado_file + ":")
         file_out.write("Dependencies for " + ado_file + ":" + "\n")
-        for dep_word in dependencies[ado_file]:
+        for dep_word in sorted(dependencies[ado_file]):
             #print("\t" + str(dep_word))
             file_out.write("\t" + str(dep_word)+"\n")
 
-    for ado_word in usages.keys():
+    for ado_word in sorted(usages):
         #print("Usages of " + ado_word + ":")
         file_out.write("Usages of " + ado_word + ":" + "\n")
-        for used_file in usages[ado_word]:
+        for used_file in sorted(usages[ado_word]):
             #print("\t" + str(used_file))
             file_out.write("\t" + str(used_file)+"\n")
